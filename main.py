@@ -51,7 +51,7 @@ def MakeTestData(df,input_dim,num_frames_list):
          with open(json_dir+f"/testdata_frame{nf}.json","w",encoding="utf8") as f:
              json.dump(df_dict, f, indent=2)
      
-     return df_x_seq_list,df_t_seq_list
+     return df_x_seq_list,df_t_seq_list,check_i
 
 
 # jsonに書き込めているかの確認
@@ -63,9 +63,19 @@ def Check_json_Data(json_dir,num_frames_list):
          print(np.shape(df["data"]),np.shape(df["label"]))
 
 
-def CalculatePredictions():
+def CalculatePredictions(data_length,num_class,num_frames_list,test_pred_list):
 
-     return
+     num_frames_list = sorted(num_frames_list,reverse=True)
+
+     pred_data = np.zeros((data_length,num_class*len(num_frames_list)),dtype='float')
+
+     for i,pl in enumerate(test_pred_list):
+         df_pred = pd.read_csv(pl).to_numpy()[1:num_class+1]
+         pred_data[:,i*num_class:(i+1)*num_class] = df_pred
+
+     pred_label = np.argmax(pred_data,axis=1) % num_class
+
+     return pred_label
 
 
 def main():
@@ -75,7 +85,9 @@ def main():
      
      df = pd.read_csv("data/test.csv",index_col=0)
 
-     MakeTestData(df,input_dim,num_frames_list)
+     _,_,data_length = MakeTestData(df,input_dim,num_frames_list)
+
+     print(data_length)
      
      # 書き込みテスト
      json_dir = "./data_json"
