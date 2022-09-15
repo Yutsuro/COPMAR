@@ -89,14 +89,11 @@ def Check_json_Data(json_dir,num_frames_list):
 # 引数：
 #    data_length: 推論するデータ数
 #    num_class: クラス数
-#    num_frames_list: 推論に用いるフレーム数を格納したリスト
 #    test_pred_list: 推論に使うCSVファイルのパスのリスト
-def CalculatePredictions(data_length,num_class,num_frames_list,test_pred_list):
-
-     num_frames_list = sorted(num_frames_list,reverse=True)
+def CalculatePredictions(data_length,num_class,test_pred_list):
 
      # 格納用の空の配列の用意（appendではなく代入のため）
-     pred_data = np.zeros((data_length,num_class*len(num_frames_list)),dtype='float')
+     pred_data = np.zeros((data_length,num_class*len(test_pred_list)),dtype='float')
 
      # 複数の確信度のデータフレームを（クラスの列を除いて）横にくっつける
      for i,pl in enumerate(test_pred_list):
